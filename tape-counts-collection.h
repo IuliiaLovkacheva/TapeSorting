@@ -16,7 +16,7 @@ public:
     void reset() override;
 
 private:
-    std::unique_ptr<Tape> counts_;
+    tape_ptr counts_;
     void moveTo(int position) const;
 };
 
