@@ -21,14 +21,14 @@ void Sort::operator()(Tape &inputTape, Tape &outputTape, const size_t &memoryLim
     std::unique_ptr<CountsCollection> counts;
     if (memoryLimit < COUNTS_LENGTH) {
         counts = std::make_unique<TapeCountsCollection>(
-                std::make_unique<FileTape>(COUNTS_TAPE_FILENAME, COUNTS_LENGTH, delays));
+                std::make_unique<FileTape>(COUNTS_TAPE_FILENAME, COUNTS_LENGTH, delays, FileTape::Mode::CREATE_OR_OVERWRITE));
     } else {
         counts = std::make_unique<VectorCountsCollection>(COUNTS_LENGTH);
     }
 
 
     // TODO place a part in the RAM (if we have some)
-    FileTape tempTape(TEMP_TAPE_FILENAME, inputTape.getLength(), delays);
+    FileTape tempTape(TEMP_TAPE_FILENAME, inputTape.getLength(), delays, FileTape::Mode::CREATE_OR_OVERWRITE);
     // TODO all the values take up RAM => should provide an option of storing them on tapes
     bool writeToTemp = true;
     size_t MAX_DIGIT = 10;

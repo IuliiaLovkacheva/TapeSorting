@@ -8,27 +8,22 @@
 #include <cassert>
 #include "file-tape.h"
 
-void print_state (const std::ios& stream) {
-    std::cout << " good()=" << stream.good();
-    std::cout << " eof()=" << stream.eof();
-    std::cout << " fail()=" << stream.fail();
-    std::cout << " bad()=" << stream.bad();
-}
-
-// TODO getLength & getIndex??
-// TODO end? some way to check that this is the last "cell"?
 FileTape::FileTape(std::string filename, size_t length, const Delays& delays, Mode mode) :
-    length_(length),
-    index_(0),
-    delays_(delays),
-    filename_(std::move(filename))
-{
+        length_(length),
+        index_(0),
+        delays_(delays),
+        filename_(std::move(filename)) {
     switch (mode) {
+        case Mode::OPEN_EXISTING:
+            openExisting();
+            break;
+        case Mode::CREATE_OR_OVERWRITE:
+            createOrOverwrite();
+            break;
         case Mode::CREATE_IF_MISSING:
-
-
+            createIfMissing();
+            break;
     }
-    createFileIfMissing();
 }
 
 
@@ -69,7 +64,7 @@ std::int32_t FileTape::read() {
 //        }
         // TODO should this be moved somewhere?
         file.close();
-    // TODO could there be other exceptions?
+        // TODO could there be other exceptions?
     } catch (const std::runtime_error& e) {
         file.close();
         throw e;
@@ -124,29 +119,59 @@ size_t FileTape::getIndex() {
     return index_;
 }
 
-void FileTape::createFileIfMissing() {
+void FileTape::createIfMissing() {
     std::ifstream file(filename_);
-    // TODO file.good()???
     if (file) {
-        file.seekg(0, std::ios::end);
-        if (file.tellg() == 0) {
-            file.close();
-            throw std::runtime_error("The file is empty\n");
-        }
+        throwIfEmpty(file);
+        file.close();
+        return;
+    }
+    createFile();
+}
+
+void FileTape::openExisting() {
+    std::ifstream file(filename_);
+    if (file) {
+        throwIfEmpty(file);
     } else {
-        // The file doesn't exist or couldn't be opened, so create it and write a zero to it
-        std::ofstream newFile(filename_);
-        if (newFile) {
-            for (size_t i = 0; i < length_; ++i) {
-                newFile << 0 << '\n';
-            }
-        } else {
-            file.close();
-            newFile.close();
-            throw std::runtime_error("Could not create or open the file\n");
-        }
-        newFile.close();
+        file.close();
+        throw std::runtime_error("The file \"" + filename_ + "\" could not be opened");
     }
     file.close();
+}
+
+void FileTape::throwIfEmpty(std::ifstream& file) {
+    file.seekg(0, std::ios::end);
+    if (file.tellg() == 0) {
+        file.close();
+        throw std::runtime_error("The file \"" + filename_ + "\" is empty\n");
+    }
+}
+
+void FileTape::createOrOverwrite() {
+    std::ofstream file(filename_, std::ios::trunc);
+    if (file) {
+        file.close();
+        throw std::runtime_error("Could not create or open the file \"" + filename_ + "\"");
+    }
+    fillWithZeros(file);
+    file.close();
+}
+
+void FileTape::createFile() {
+    std::ofstream newFile(filename_);
+    if (newFile) {
+        fillWithZeros(newFile);
+    } else {
+        newFile.close();
+        throw std::runtime_error("Could not create or open the file \"" + filename_ + "\"");
+    }
+    newFile.close();
+}
+
+void FileTape::fillWithZeros(std::ofstream& file) {
+    for (size_t i = 0; i < length_; ++i) {
+        file << 0 << '\n';
+    }
 }
 

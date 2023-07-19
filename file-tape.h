@@ -28,7 +28,12 @@ private:
     size_t index_;
     const Delays& delays_;
     static void sleep(int time);
-    void createFileIfMissing();
+    void createIfMissing();
+    void createOrOverwrite();
+    void createFile();
+    void openExisting();
+    void throwIfEmpty(std::ifstream& file);
+    void fillWithZeros(std::ofstream& newFile);
 };
 
 

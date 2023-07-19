@@ -15,7 +15,6 @@ private:
     static const std::string COUNTS_TAPE_FILENAME;
     static const std::string TEMP_TAPE_FILENAME;
     static int nthDigit(int32_t value, size_t n);
-
     static void createTempIfMissing() ;
 };
 
