@@ -59,12 +59,8 @@ std::int32_t FileTape::read() {
             ++elementCounter;
         }
         // TODO throw if not enough elements?
-//        if (elementCounter < index_) {
-//            throw std::runtime_error("The file doesn't ")
-//        }
         // TODO should this be moved somewhere?
         file.close();
-        // TODO could there be other exceptions?
     } catch (const std::runtime_error& e) {
         file.close();
         throw e;
@@ -79,7 +75,6 @@ void FileTape::write(std::int32_t value) {
     std::ifstream inFile(filename_);
     int temp;
     int tempIndex = 0;
-    // TODO check if empty/doesn't match the length, pad w/ zeroes in that case (or throw?)
     while (!inFile.eof()) {
         inFile >> temp;
         if (inFile.fail() && !inFile.eof()) {
@@ -92,7 +87,6 @@ void FileTape::write(std::int32_t value) {
             ++tempIndex;
         }
     }
-//    print_state(inFile);
     inFile.close();
 
     // TODO could be out of range if the file is invalid
@@ -150,7 +144,7 @@ void FileTape::throwIfEmpty(std::ifstream& file) {
 
 void FileTape::createOrOverwrite() {
     std::ofstream file(filename_, std::ios::trunc);
-    if (file) {
+    if (!file) {
         file.close();
         throw std::runtime_error("Could not create or open the file \"" + filename_ + "\"");
     }

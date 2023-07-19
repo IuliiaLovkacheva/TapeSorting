@@ -35,8 +35,7 @@ int main(int argc, char **argv) {
             throw std::invalid_argument("The memory limit (M) must be an integer");
         }
         if (memoryLimit <= 0) {
-            // TODO **must** it be positive???
-            throw std::invalid_argument("The memory limit (M) must be positive");
+            throw std::invalid_argument("The memory limit (M) mustn't be negative");
         }
 
         const std::string DELAYS_FILENAME = "config";
@@ -44,7 +43,7 @@ int main(int argc, char **argv) {
         std::ifstream delaysFile(DELAYS_FILENAME);
         if (!delaysFile) {
             delaysFile.close();
-            throw std::runtime_error("The delay configuration file " + DELAYS_FILENAME + "could not be opened");
+            throw std::runtime_error("The delay configuration file \"" + DELAYS_FILENAME + "\" could not be opened");
         }
         delaysFile >> delays;
         if (delaysFile.fail()) {
