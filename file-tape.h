@@ -24,7 +24,10 @@ public:
     size_t getIndex() override;
 private:
     const std::string filename_;
-    size_t length_;
+    const std::string nonIntegerValueError_;
+    const std::string notEnoughElementsError_;
+    const std::string tooManyElementsError_;
+    const size_t length_;
     size_t index_;
     const Delays& delays_;
     static void sleep(int time);
