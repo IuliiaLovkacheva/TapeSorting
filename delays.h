@@ -1,5 +1,5 @@
-#ifndef DELAY_DATA_H
-#define DELAY_DATA_H
+#ifndef DELAYS_H
+#define DELAYS_H
 #include <iosfwd>
 
 struct Delays {
