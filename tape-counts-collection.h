@@ -12,12 +12,12 @@ public:
     explicit TapeCountsCollection(tape_ptr tape);
     void increment(const int& value) override;
     size_t get(const int& value) const override;
-
     void reset() override;
 
 private:
     tape_ptr counts_;
     void moveTo(int position) const;
+    void moveForwardToPosition(int position) const;
 };
 
 #endif

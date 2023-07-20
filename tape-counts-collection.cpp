@@ -3,7 +3,6 @@
 void TapeCountsCollection::increment(const int& value) {
     moveTo(value + OFFSET);
     int oldCount = counts_->read();
-    // TODO how do the zeros come to be?
     counts_->write(oldCount + 1);
 }
 
@@ -12,7 +11,6 @@ size_t TapeCountsCollection::get(const int& value) const {
     return counts_->read();
 }
 
-// TODO possibly create a tape inside
 TapeCountsCollection::TapeCountsCollection(TapeCountsCollection::tape_ptr tape) :
         counts_(std::move(tape)) {}
 
@@ -24,13 +22,14 @@ void TapeCountsCollection::moveTo(int position) const {
             }
             return;
         }
-        while (counts_->getIndex() != position) {
-            counts_->forward();
-        }
+        moveForwardToPosition(position);
         return;
     }
     counts_->rewind();
-    // TODO duplicated code
+    moveForwardToPosition(position);
+}
+
+void TapeCountsCollection::moveForwardToPosition(int position) const {
     while (counts_->getIndex() != position) {
         counts_->forward();
     }

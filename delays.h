@@ -10,5 +10,4 @@ struct Delays {
     friend std::istream& operator>>(std::istream& is, Delays& obj);
 };
 
-
 #endif
