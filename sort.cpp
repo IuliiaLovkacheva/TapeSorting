@@ -28,21 +28,11 @@ void Sort::operator()(Tape& inputTape, Tape& outputTape, const size_t& memoryLim
         counts = std::make_unique<VectorCountsCollection>(COUNTS_LENGTH);
     }
 
-
-    // TODO place a part in the RAM (if we have some)
     FileTape tempTape(TEMP_TAPE_FILENAME, inputTape.getLength(), delays, FileTape::Mode::CREATE_OR_OVERWRITE);
-    // TODO all the values take up RAM => should provide an option of storing them on tapes
     bool writeToTemp = true;
     Tape* readingTape = &inputTape;
     Tape* writingTape = &tempTape;
     for (size_t digitNumber = 0; digitNumber < MAX_DIGIT; ++digitNumber) {
-        // subroutine(wt, rt)
-        // if wtt
-        //      s(temp, out)
-        // else
-        //      s(out, temp)
-        // //^this doesn't account for the input tape
-        // adding the digit counting would require some restructuring
         for (size_t i = 0; i < readingTape->getLength(); ++i) {
             int32_t value = readingTape->read();
             counts->increment(nthDigit(value, digitNumber));
