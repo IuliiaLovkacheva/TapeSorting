@@ -55,7 +55,6 @@ int main(int argc, char **argv) {
         }
         delaysFile.close();
 
-        std::cout << delays.read << ' ' << delays.write << ' ' << delays.move << ' ' << delays.rewind << '\n';
         FileTape inFileTape(inFileName, tapeLength, delays, FileTape::Mode::OPEN_EXISTING);
         FileTape outFileTape(outFileName, tapeLength, delays, FileTape::Mode::CREATE_IF_MISSING);
         Sort sort;
